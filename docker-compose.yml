@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: 'bitnami/mysql:latest'
+    container_name: bitnami_mysql
+    ports:
+      - 3306:3306
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./db:/bitnami/mysql/data
+
+  phpmyadmin:
+      image: phpmyadmin
+      container_name: pma
+      links:
+        - mysql
+      restart: always
+      ports:
+        - 8080:80
+      environment:
+        - PMA_HOST=bitnami_mysql
+        - PMA_PORT=3306
+        - PMA_ARBITRARY=1
+
+  php:
+    image: oberd/php-8.0-apache
+    ports:
+        - 80:80
+    volumes:
+      - ./html:/var/www/html
